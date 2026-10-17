@@ -12,6 +12,17 @@ import { traverseJavaScriptValueAstSteps } from "./javascriptSemanticTraversal.j
 export const ELECTRON_MODULE =
   /^electron(?:\/(?:common|main|renderer|utility))?$/u;
 
+/** Whether any static reference imports or requires an Electron module. */
+export const referencesElectronModule = (
+  references: readonly {
+    readonly value: { readonly specifier: string | null };
+  }[],
+): boolean =>
+  references.some(
+    ({ value }) =>
+      value.specifier !== null && ELECTRON_MODULE.test(value.specifier),
+  );
+
 /**
  * Electron's CommonJS exports define no `default` member, so a leading
  * `default` segment can only denote the module object itself, as an ES module
